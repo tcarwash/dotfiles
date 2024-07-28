@@ -76,6 +76,9 @@ require('lazy').setup({
     {'williamboman/mason.nvim'},
     { "sitiom/nvim-numbertoggle" },
     {'williamboman/mason-lspconfig.nvim'},
+    {'mbbill/undotree'},
+    {'philrunninger/nerdtree-visual-selection'},
+    {'Xuyuanp/nerdtree-git-plugin'},
     {
         "ThePrimeagen/harpoon",
         branch = "harpoon2",
@@ -101,21 +104,24 @@ vim.opt.colorcolumn = '80'
 vim.g.mapleader = ' '
 vim.api.nvim_set_keymap('c', 'sudow', 'w !sudo tee % >/dev/null', { noremap = true })
 vim.api.nvim_set_keymap('n', '<Leader>b', ':ls<CR>:b<Space>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<Leader>n', ':NerdTreeFocus<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-t>', ':NERDTreeToggle<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-f>', ':NERDTreeFind<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>o', ':NERDTreeToggle<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-o>', ':NERDTree<CR>', { noremap = true })
 
-vim.api.nvim_set_keymap('n', '<C-g>', ':vertical resize +1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-s>', ':vertical resize -1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-d>', ':resize +1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-f>', ':resize -1<CR>', { noremap = true })
 
-vim.api.nvim_set_keymap('n', 'J', [[:<C-U>exec "norm m`" \\| move + . (0+v:count1)<CR>==``]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', 'K', [[:<C-U>exec "norm m`" \\| move - . (1+v:count1)<CR>==``]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', 'J', [[:<C-U>exec "'<,'>move '>+" . (0+v:count1)<CR>gv=gv]], { noremap = true, silent = true })
-vim.api.nvim_set_keymap('x', 'K', [[:<C-U>exec "'<,'>move '<-" . (1+v:count1)<CR>gv=gv]], { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<M-l>', ':vertical resize +1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-h>', ':vertical resize -1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-j>', ':resize +1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-k>', ':resize -1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', { noremap = true })
+vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>j', '<C-d>zz', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>k', '<C-u>zz', { noremap = true })
 
+-- Quick Edit
+vim.api.nvim_set_keymap('n', '<leader>ev', '<cmd>e ~/dotfiles/init.lua<CR>', { noremap = true }) -- vim init.lua
+vim.api.nvim_set_keymap('n', '<leader>et', '<cmd>e ~/dotfiles/tmux.conf<CR>', { noremap = true }) -- tmux.conf
+
+-- Telescope config
 vim.api.nvim_set_keymap('n', '<Leader>ff', '<cmd>Telescope find_files<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<Leader>fg', '<cmd>Telescope live_grep<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<Leader>fb', '<cmd>Telescope buffers<CR>', { noremap = true })
@@ -125,6 +131,13 @@ vim.api.nvim_set_keymap('n', '<Leader>ff', '<cmd>lua require("telescope.builtin"
 vim.api.nvim_set_keymap('n', '<Leader>fg', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<Leader>fb', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<Leader>fh', '<cmd>lua require("telescope.builtin").help_tags()<CR>', { noremap = true })
+
+-- Undo Tree
+vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+
+-- Custom
+vim.api.nvim_set_keymap('n', '<Leader>cd', '<cmd>silent !tmux send-keys -t{bottom-left} "cd $(pwd)" C-m "clear" C-m<CR>', { noremap = true })
+vim.api.nvim_set_keymap('l', '<Leader>CD', 'Ccd<Leader>cd', { noremap = true })
 
 -- Git Blame
 vim.g.blamer_enabled = 1
@@ -147,6 +160,45 @@ require('mason-lspconfig').setup({
         end,
     },
 })
+
+-- Harpoon2
+local harpoon = require("harpoon")
+
+harpoon:setup()
+
+vim.keymap.set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+vim.keymap.set("n", "<leader>x", function() harpoon:list():add() end)
+
+vim.keymap.set("n", "<leader>s", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<leader>d", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<leader>f", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<leader>g", function() harpoon:list():select(4) end)
+
+-- Toggle previous & next buffers stored within Harpoon list
+vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end)
+vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end)
+
+-- basic telescope configuration
+local conf = require("telescope.config").values
+local function toggle_telescope(harpoon_files)
+    local file_paths = {}
+    for _, item in ipairs(harpoon_files.items) do
+        table.insert(file_paths, item.value)
+    end
+
+    require("telescope.pickers").new({}, {
+        prompt_title = "Harpoon",
+        finder = require("telescope.finders").new_table({
+            results = file_paths,
+        }),
+        previewer = conf.file_previewer({}),
+        sorter = conf.generic_sorter({}),
+    }):find()
+end
+
+vim.keymap.set("n", "<leader>h", function() toggle_telescope(harpoon:list()) end,
+    { desc = "Open harpoon window" })
 
 
 -- Treesitter configuration

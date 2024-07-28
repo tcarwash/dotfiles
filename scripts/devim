@@ -1,0 +1,13 @@
+session="devim"
+
+tmux new-session -d -s $session
+
+tmux new-window -n 'vim'
+tmux send-keys -t 'vim' 'nvim -S /home/tyler/.config/nvim/sessions/devim.vim' C-m
+
+tmux split-window -v -l 2
+tmux split-window -h
+tmux select-pane -U
+tmux send-keys -t 'vim' C-h C-h C-h
+
+tmux attach -t $session

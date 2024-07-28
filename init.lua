@@ -108,10 +108,10 @@ vim.api.nvim_set_keymap('n', '<leader>o', ':NERDTreeToggle<CR>', { noremap = tru
 vim.api.nvim_set_keymap('n', '<C-o>', ':NERDTree<CR>', { noremap = true })
 
 
-vim.api.nvim_set_keymap('n', '<C-S-l>', ':vertical resize +1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-S-h>', ':vertical resize -1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-S-j>', ':resize +1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<C-S-k>', ':resize -1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-l>', ':vertical resize +1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-h>', ':vertical resize -1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-j>', ':resize +1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<M-k>', ':resize -1<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>j', '<C-d>zz', { noremap = true })

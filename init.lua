@@ -79,6 +79,7 @@ require('lazy').setup({
     { "sitiom/nvim-numbertoggle" },
     {'williamboman/mason-lspconfig.nvim'},
     {'mbbill/undotree'},
+    {'github/copilot.vim'},
     {'philrunninger/nerdtree-visual-selection'},
     {
         'altermo/ultimate-autopair.nvim',
@@ -91,21 +92,6 @@ require('lazy').setup({
         dependencies = { 
             "nvim-lua/plenary.nvim"
         }
-    },
-    {
-      "zbirenbaum/copilot-cmp",
-      event = "InsertEnter",
-      config = function () require("copilot_cmp").setup() end,
-      dependencies = {
-        "zbirenbaum/copilot.lua",
-        cmd = "Copilot",
-        config = function()
-          require("copilot").setup({
-            suggestion = { enabled = false },
-            panel = { enabled = false },
-          })
-        end,
-      },
     },
       {
     'abecodes/tabout.nvim',
@@ -243,8 +229,8 @@ vim.keymap.set("n", "<leader>g", function() harpoon:list():select(4) end)
 vim.keymap.set("n", "<leader>p", function() harpoon:list():prev() end)
 vim.keymap.set("n", "<leader>n", function() harpoon:list():next() end)
 
--- Ultimate AutoPair
 
+-- Ultimate AutoPair
 require'ultimate-autopair'.setup{}
 local ua=require'ultimate-autopair'
 local configs={ua.extend_default({})}
@@ -278,3 +264,4 @@ require('nvim-treesitter.configs').setup {
     enable = true
   }
 }
+

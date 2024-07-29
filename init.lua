@@ -23,6 +23,8 @@ vim.opt.splitbelow = true
 vim.opt.splitright = true
 vim.opt.termguicolors = true
 vim.opt.scrolloff = 8
+vim.opt.ttimeoutlen = 100
+
 
 -- Package Manager
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
@@ -85,8 +87,25 @@ require('lazy').setup({
         dependencies = { 
             "nvim-lua/plenary.nvim" 
         }
-    }
+    },
+    {
+      "zbirenbaum/copilot-cmp",
+      event = "InsertEnter",
+      config = function () require("copilot_cmp").setup() end,
+      dependencies = {
+        "zbirenbaum/copilot.lua",
+        cmd = "Copilot",
+        config = function()
+          require("copilot").setup({
+            suggestion = { enabled = false },
+            panel = { enabled = false },
+          })
+        end,
+      },
+    },
+
     })
+
 
 -- Theming
 vim.g.lightline = {
@@ -108,10 +127,10 @@ vim.api.nvim_set_keymap('n', '<leader>o', ':NERDTreeToggle<CR>', { noremap = tru
 vim.api.nvim_set_keymap('n', '<C-o>', ':NERDTree<CR>', { noremap = true })
 
 
-vim.api.nvim_set_keymap('n', '<M-l>', ':vertical resize +1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<M-h>', ':vertical resize -1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<M-j>', ':resize +1<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<M-k>', ':resize -1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<S-L>', ':vertical resize +1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<S-H>', ':vertical resize -1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<S-J>', ':resize +1<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<S-K>', ':resize -1<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-d>', '<C-d>zz', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-u>', '<C-u>zz', { noremap = true })
 vim.api.nvim_set_keymap('n', '<leader>j', '<C-d>zz', { noremap = true })
@@ -137,7 +156,6 @@ vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
 
 -- Custom
 vim.api.nvim_set_keymap('n', '<Leader>cd', '<cmd>silent !tmux send-keys -t{bottom-left} "cd $(pwd)" C-m "clear" C-m<CR>', { noremap = true })
-vim.api.nvim_set_keymap('l', '<Leader>CD', 'Ccd<Leader>cd', { noremap = true })
 
 -- Git Blame
 vim.g.blamer_enabled = 1
